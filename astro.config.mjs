@@ -17,6 +17,12 @@ export default defineConfig({
 						{ label: 'React Fiber', link: '/react/fiber' },
 					],
 				},
+				{
+					label: 'Coding Tests',
+					items: [
+						{ label: 'Promise', link: '/coding-tests/promise' },
+					],
+				}
 			],
 		}),
 	],

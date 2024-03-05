@@ -1,0 +1,77 @@
+---
+title: Promise
+description: A Promise is an object representing the eventual completion or failure of an asynchronous operation.
+---
+
+## Promise/A+ Specification
+
+> https://promisesaplus.com/
+
+### Terminology，术语
+
+1. “promise” ，一个拥有 `then` 方法的对象或函数，其行为符合本规范
+2. “thenable”，一个定义了 `then` 方法的对象或函数
+3. “value”，任何 JavaScript 合法值（包括 `undefined`， `thenable` 和 `promise`）
+4. “exception”，使用 `throw` 语句抛出的一个值
+5. “reason”，表示一个 `promise` 的拒绝原因
+
+### State，状态
+
+promise 的当前状态必须为以下三种状态之一：`Pending`， `Fulfilled` ， `Rejected`
+
++ 处于 Pending 时，promise 可以迁移至 Fullfilled 或 Rejected
++ 处于 Fulfilled 时，promise 必须拥有一个不可变的终值且不能迁移至其他状态
++ 处于 Rejected 时，promise 必须拥有一个不可变的拒绝原因且不能迁移至其他状态
+
+所以 Promise 内部其实维护了一个类似下图所示的状态机，
+
+![Promise State](/promise-state.png)
+
+Promise 在创建时处于 Pending（等待态），之后可以变为 Fulfilled（执行态）或者 Rejected（拒绝态），一个承诺要么被兑现，要么被拒绝，这一过程是不可逆的。
+
+定义了相关的术语和状态后，是对 `then` 方法执行过程的详细描述。
+
+### Then
+
+一个 promise 必须提供一个 `then` 方法以访问其当前值、终值和拒绝原因。
+
+`then` 方法接受两个参数，
+
+```
+promise.then(onFulfilled, onRejected);
+```
+
++ onFulfilled，在 promise 执行结束后调用，第一个参数为 promise 的终值
++ onRejected，在 promise 被拒绝执行后调用，第一个参数为 promise 的拒绝原因
+
+## Implementing a Promise
+
+<iframe src="https://codesandbox.io/embed/g3kx4n?view=editor&module=%2Fsrc%2Findex.mjs&hidenavigation=1"
+        style="width:100%; height: 500px; border:0; border-radius: 4px; overflow:hidden;"
+        title="Promise"
+        allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+        sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+/>
+
+## Event Loop
+
+> https://stackoverflow.com/a/55783876
+
++ MutationObserver is a microtask.
++ postMessage->onmessage is a macrotask.
++ setTimeout is a macrotask.
++ Promise.resolve().then is a microtask, but its constructor is synchronous.
++ requestAnimationFrame 用于在下一次重绘之前执行动画或者视觉更新的回调，通常被视作宏任务，但具有自己的队列和执行时机，更准确地说，它是一种帧任务（Frame Task）。
++ I/O (如 AJAX 请求)
++ UI rendering 通常在宏任务执行完毕后进行，不直接对应于某个具体的API，但可以视为浏览器的宏任务的一部分。
++ MessageChannel is a macrotask.
++ process.nextTick 仅在 Node.js 中存在，作为微任务处理，用于在当前操作结束后立即执行函数。
+
+**总结**：
++ **微任务（Microtask）**：包括 Promise 回调、MutationObserver 的回调、`process.nextTick`（Node.js 环境）。微任务的执行时机是在当前宏任务执行完毕后立即执行。
+
++ **宏任务（Macrotask）**：包括 `setTimeout`、`setInterval`、I/O、UI 渲染、`setImmediate`（Node.js）、`requestAnimationFrame`、`MessageChannel`。浏览器会在每个宏任务执行完毕后，检查并执行所有排队的微任务，然后再继续下一个宏任务。
+
++ **事件循环（Event Loop）**：JavaScript 的执行机制，用于协调事件、用户交互、脚本、渲染、网络等的处理。事件循环确保了微任务和宏任务的有序执行。
+
++ **`requestIdleCallback`**：另一个异步 API，用于在浏览器空闲时期执行低优先级的任务，它的执行时机不固定，依赖于浏览器的空闲时间，可以视为一种特殊的宏任务。
