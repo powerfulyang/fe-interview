@@ -11,9 +11,9 @@ React Fiber is a complete rewrite of the React core algorithm, with a focus on p
 
 Because Fiber is asynchronous, React can:
 
-+ Pause, resume, and restart rendering work on components as new updates come in
-+ Reuse previously completed work and even abort it if not needed
-+ Split work into chunks and prioritize tasks based on importance
+-   Pause, resume, and restart rendering work on components as new updates come in
+-   Reuse previously completed work and even abort it if not needed
+-   Split work into chunks and prioritize tasks based on importance
 
 > https://blog.logrocket.com/deep-dive-react-fiber/#what-react-fiber
 
@@ -37,27 +37,27 @@ This led the React team to rewrite the reconciliation algorithm, which is called
 
 ## How does React Fiber work?
 
-+ singly-linked list 
-+ parent first
-+ depth first traversal
+-   singly-linked list
+-   parent first
+-   depth first traversal
 
 ### Singly-linked list
 
 A fiber node represents a stack frame and an instance of a React component. A fiber node comprises the following members:
 
-+ Type
+-   Type
 
-+ Key
+-   Key
 
-+ Child
+-   Child
 
-+ Sibling
+-   Sibling
 
-+ Return
+-   Return
 
-+ Alternate
+-   Alternate
 
-+ Output
+-   Output
 
 #### Type
 
